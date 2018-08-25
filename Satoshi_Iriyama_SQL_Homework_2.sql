@@ -152,24 +152,14 @@ LEFT JOIN customer ON payment.customer_id = customer.customer_id
 GROUP BY customer.store_id
 
 #7h. List the top five genres in gross revenue in descending order. (Hint: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
-CREATE TABLE table_a(
-SELECT film_category.film_id, film_category.category_id, category.name
+SELECT category.name, SUM(payment.amount) AS "Revenue"
 FROM film_category
 LEFT JOIN category ON film_category.category_id = category.category_id
-);
-
-CREATE TABLE table_b(
-SELECT inventory.film_id, payment.amount 
-FROM payment
-LEFT JOIN rental ON payment.rental_id = rental.rental_id
-LEFT JOIN inventory ON rental.inventory_id = inventory.inventory_id
-);
-
-SELECT table_a.name, SUM(table_b.amount) AS "Revenue"
-FROM table_a
-LEFT JOIN table_b ON table_a.film_id = table_b.film_id 
-GROUP BY table_a.name
-ORDER BY SUM(table_b.amount) DESC LIMIT 5;
+RIGHT JOIN inventory ON film_category.film_id = inventory.film_id 
+RIGHT JOIN rental ON inventory.inventory_id = rental.inventory_id
+RIGHT JOIN payment ON rental.rental_id = payment.rental_id
+GROUP BY category.name
+ORDER BY SUM(payment.amount) DESC LIMIT 5
 
 #8a-8c : I don't know how to do it.
 
